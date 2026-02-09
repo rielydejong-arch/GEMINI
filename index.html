@@ -3,529 +3,438 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Rd the AI // ULTIMATE</title>
+    <title>Rd the AI // NEXUS</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=JetBrains+Mono:wght@400;600&display=swap');
 
         :root {
-            --bg-sidebar: #0f0f10;
-            --bg-main: #050505;
-            --bg-card: #141414;
-            --bg-input: #1a1a1a;
-            --text-primary: #ececec;
-            --text-secondary: #a0a0a0;
-            --rd-gradient: linear-gradient(135deg, #FF3B3B 0%, #990000 100%);
-            --accent: #FF3B3B;
+            --bg-body: #050505;
+            --bg-sidebar: rgba(10, 10, 10, 0.7);
+            --bg-input: rgba(20, 20, 20, 0.8);
+            --border: rgba(255, 255, 255, 0.08);
+            --accent: #FF2A2A; /* Crimson */
+            --accent-glow: rgba(255, 42, 42, 0.4);
+            --text-main: #ECECEC;
+            --text-muted: #888;
             --font-ui: 'Inter', sans-serif;
             --font-code: 'JetBrains Mono', monospace;
+            --glass: blur(20px);
         }
 
         * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
 
         body {
-            margin: 0;
-            background: var(--bg-main);
-            color: var(--text-primary);
-            font-family: var(--font-ui);
-            height: 100vh;
-            display: flex;
-            overflow: hidden;
+            margin: 0; background: var(--bg-body); color: var(--text-main);
+            font-family: var(--font-ui); height: 100vh; display: flex; overflow: hidden;
+            /* Subtle grid background */
+            background-image: radial-gradient(circle at 50% 0%, #1a0505 0%, #000 60%);
         }
 
-        /* --- 1. CINEMATIC INTRO --- */
-        #intro-layer {
-            position: fixed; inset: 0;
-            background: #000;
-            z-index: 20000;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            transition: opacity 0.8s ease, visibility 0.8s;
+        /* --- 1. ANIMATED INTRO --- */
+        #intro {
+            position: fixed; inset: 0; background: #000; z-index: 9999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 0.8s ease;
         }
-
-        .logo-box {
-            width: 100px; height: 100px;
-            background: var(--rd-gradient);
-            border-radius: 30px;
-            display: grid; place-items: center;
-            box-shadow: 0 0 80px rgba(255, 0, 0, 0.6);
-            transform: scale(0);
-            animation: popIn 1s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+        .intro-logo {
+            font-size: 60px; font-weight: 800; letter-spacing: -2px;
+            background: linear-gradient(to right, #fff, var(--accent));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            opacity: 0; transform: scale(0.8);
+            animation: introReveal 1.2s cubic-bezier(0.2, 1, 0.3, 1) forwards;
         }
-
-        .intro-text {
-            margin-top: 30px;
-            font-size: 32px; font-weight: 800; letter-spacing: -1px;
-            opacity: 0; transform: translateY(20px);
-            animation: slideUp 0.8s ease 0.5s forwards;
-        }
-        
         .intro-sub {
-            margin-top: 5px; font-size: 12px; letter-spacing: 4px; color: var(--accent);
-            opacity: 0; animation: fadeIn 1s ease 1s forwards;
+            margin-top: 10px; font-size: 12px; letter-spacing: 4px; color: #555;
+            opacity: 0; animation: fadeIn 1s ease 0.5s forwards;
         }
-
-        @keyframes popIn { 0% { transform: scale(0) rotate(-45deg); } 100% { transform: scale(1) rotate(0deg); } }
-        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+        @keyframes introReveal { to { opacity: 1; transform: scale(1); } }
         @keyframes fadeIn { to { opacity: 1; } }
 
-        /* --- 2. LOGIN OVERLAY --- */
+        /* --- 2. LOGIN MODAL --- */
         #login-overlay {
-            position: fixed; inset: 0;
-            background: rgba(0,0,0,0.9);
-            backdrop-filter: blur(15px);
-            z-index: 10000;
-            display: none; /* Toggled via JS */
-            flex-direction: column;
-            justify-content: center; align-items: center;
+            position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px); z-index: 5000;
+            display: none; justify-content: center; align-items: center;
+            animation: fadeIn 0.5s ease;
         }
-
-        .login-card {
-            background: var(--bg-card);
-            border: 1px solid #333;
-            padding: 40px;
-            border-radius: 24px;
-            text-align: center;
-            width: 90%; max-width: 400px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        .login-box {
+            background: #111; border: 1px solid var(--border);
+            padding: 40px; border-radius: 24px; text-align: center;
+            width: 90%; max-width: 380px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
         }
-
         .login-input {
-            width: 100%; padding: 15px;
-            margin: 20px 0;
-            background: #000; border: 1px solid #333;
-            color: #fff; font-size: 18px; text-align: center;
-            border-radius: 12px;
-            font-family: var(--font-ui);
+            width: 100%; padding: 14px; margin: 20px 0;
+            background: #080808; border: 1px solid #333; color: #fff;
+            border-radius: 12px; font-size: 16px; text-align: center;
+            transition: 0.2s;
         }
-        .login-input:focus { border-color: var(--accent); }
-
+        .login-input:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
         .login-btn {
-            background: #fff; color: #000;
-            border: none; padding: 12px 30px;
-            font-weight: 700; border-radius: 50px;
-            cursor: pointer; transition: 0.2s;
-            width: 100%; font-size: 16px;
+            width: 100%; padding: 12px; background: #fff; color: #000;
+            border: none; border-radius: 50px; font-weight: 700; cursor: pointer;
+            transition: 0.2s;
         }
-        .login-btn:hover { background: var(--accent); color: #fff; transform: scale(1.02); }
+        .login-btn:hover { background: var(--accent); color: #fff; }
 
-        /* --- 3. SIDEBAR --- */
+        /* --- 3. SIDEBAR (GLASS) --- */
         aside {
-            width: 260px;
-            background: var(--bg-sidebar);
-            display: flex; flex-direction: column;
-            padding: 20px 15px; gap: 8px;
-            border-right: 1px solid rgba(255,255,255,0.05);
+            width: 260px; height: 100%;
+            background: var(--bg-sidebar); backdrop-filter: var(--glass);
+            border-right: 1px solid var(--border);
+            display: flex; flex-direction: column; padding: 20px; gap: 8px;
+            transition: transform 0.3s ease;
+            z-index: 100;
         }
-
-        .new-chat {
-            background: var(--bg-input);
-            color: var(--text-secondary);
-            border: 1px solid #333;
-            padding: 12px; border-radius: 12px;
-            font-size: 14px; font-weight: 600;
-            cursor: pointer; transition: 0.2s;
+        
+        .brand-area {
+            font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 20px;
             display: flex; align-items: center; gap: 10px;
-            margin-bottom: 15px;
         }
-        .new-chat:hover { background: #222; color: #fff; border-color: #555; }
-
-        .section-title {
-            font-size: 10px; font-weight: 700; color: #555;
-            margin: 10px 10px 5px; text-transform: uppercase; letter-spacing: 1px;
-        }
+        .brand-dot { width: 10px; height: 10px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 10px var(--accent); }
 
         .nav-btn {
+            padding: 12px 16px; border-radius: 12px; color: var(--text-muted);
+            font-size: 14px; font-weight: 500; cursor: pointer;
             display: flex; align-items: center; gap: 12px;
-            padding: 10px 12px; border-radius: 10px;
-            cursor: pointer; color: var(--text-secondary);
-            font-size: 14px; font-weight: 500; transition: 0.2s;
+            transition: all 0.2s; border: 1px solid transparent;
         }
-        .nav-btn:hover { background: rgba(255,255,255,0.05); color: #fff; }
-        .nav-btn.active { background: rgba(255, 59, 59, 0.1); color: var(--accent); }
+        .nav-btn:hover { background: rgba(255,255,255,0.03); color: #fff; }
+        .nav-btn.active {
+            background: rgba(255, 42, 42, 0.08); color: var(--accent);
+            border-color: rgba(255, 42, 42, 0.2);
+        }
         .nav-btn svg { width: 18px; height: 18px; fill: currentColor; }
 
-        .user-footer {
-            margin-top: auto; padding: 15px;
-            border-top: 1px solid #222;
+        .user-profile {
+            margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border);
             display: flex; align-items: center; justify-content: space-between;
         }
-        .user-info { font-size: 13px; font-weight: 600; color: #fff; }
-        .reset-link { font-size: 10px; color: #555; cursor: pointer; text-decoration: underline; }
+        .user-name { font-size: 14px; font-weight: 600; color: #fff; }
+        .logout-btn { font-size: 11px; color: #555; cursor: pointer; text-decoration: underline; }
 
-        /* --- 4. MAIN AREA --- */
+        /* --- 4. MAIN CONTENT --- */
         main {
-            flex: 1; display: flex; flex-direction: column; position: relative;
+            flex: 1; height: 100%; display: flex; flex-direction: column; position: relative;
         }
 
-        header {
-            padding: 15px 30px; display: flex; align-items: center; gap: 10px;
-        }
-        .brand { font-size: 18px; font-weight: 700; color: #fff; letter-spacing: -0.5px; }
-        .brand span { color: var(--accent); }
-
-        /* HERO VIEW */
+        /* Hero / Welcome */
         #hero {
-            flex: 1; display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            max-width: 800px; margin: 0 auto; width: 100%; padding: 20px;
-            transition: opacity 0.3s;
+            flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 1; transition: 0.3s; padding: 20px;
         }
-
         .hero-title {
-            font-size: 48px; font-weight: 600; line-height: 1.1; margin-bottom: 40px;
-            background: linear-gradient(to bottom right, #fff, #666);
+            font-size: 42px; font-weight: 700; text-align: center; margin-bottom: 40px;
+            background: linear-gradient(135deg, #fff 0%, #666 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            align-self: flex-start;
         }
-        .hero-title span { color: var(--accent); -webkit-text-fill-color: var(--accent); }
+        .suggestion-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px; width: 100%; max-width: 600px;
+        }
+        .suggestion-card {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+            padding: 15px; border-radius: 16px; cursor: pointer; transition: 0.2s;
+            font-size: 13px; color: #aaa; text-align: center;
+        }
+        .suggestion-card:hover { border-color: var(--accent); color: #fff; background: rgba(255,42,42,0.05); }
 
-        .input-box {
-            width: 100%; background: var(--bg-input);
-            border-radius: 30px; padding: 8px 8px 8px 25px;
-            display: flex; align-items: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            border: 1px solid transparent; transition: 0.2s;
+        /* Chat Area */
+        #chat-view {
+            display: none; flex-direction: column; height: 100%; width: 100%;
         }
-        .input-box:focus-within { background: #222; border-color: #444; }
-
-        input {
-            flex: 1; background: transparent; border: none;
-            color: #fff; font-size: 16px; font-family: var(--font-ui); height: 40px;
-        }
-
-        .send-circle {
-            width: 44px; height: 44px; background: #fff;
-            border-radius: 50%; display: grid; place-items: center;
-            cursor: pointer; border: none; transition: 0.2s;
-        }
-        .send-circle:hover { background: var(--accent); transform: scale(1.05); }
-        .send-circle svg { width: 20px; height: 20px; fill: #000; }
-        .send-circle:hover svg { fill: #fff; }
-
-        .suggestions {
-            display: flex; gap: 10px; margin-top: 30px; width: 100%; overflow-x: auto;
-        }
-        .chip {
-            background: var(--bg-card); border: 1px solid #333;
-            padding: 10px 16px; border-radius: 12px; font-size: 13px;
-            white-space: nowrap; cursor: pointer; transition: 0.2s; color: #ccc;
-        }
-        .chip:hover { border-color: var(--accent); color: #fff; }
-
-        /* CHAT VIEW */
-        #chat-interface {
-            display: none; flex-direction: column; height: 100%;
-        }
-        #chat-scroller {
-            flex: 1; overflow-y: auto; padding: 20px 15% 40px 15%;
+        #scroller {
+            flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 120px;
             display: flex; flex-direction: column; gap: 24px;
+            max-width: 900px; margin: 0 auto; width: 100%;
         }
+        /* Custom Scrollbar */
+        #scroller::-webkit-scrollbar { width: 6px; }
+        #scroller::-webkit-scrollbar-thumb { background: #222; border-radius: 3px; }
 
-        .msg { display: flex; gap: 16px; line-height: 1.6; font-size: 15px; animation: slideIn 0.3s ease; }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* Messages */
+        .msg { display: flex; gap: 15px; animation: msgSlide 0.3s ease; }
+        @keyframes msgSlide { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .msg.user { justify-content: flex-end; }
-        .bubble {
-            background: #222; color: #fff;
-            padding: 12px 20px; border-radius: 20px 20px 4px 20px;
-            max-width: 80%;
+        .msg.user .bubble {
+            background: #222; color: #fff; border: 1px solid #333;
+            border-radius: 20px 20px 4px 20px; padding: 12px 18px; max-width: 85%;
+            font-size: 15px; line-height: 1.5;
         }
 
-        .msg.ai .avatar {
-            width: 36px; height: 36px; background: var(--rd-gradient);
-            border-radius: 50%; display: grid; place-items: center;
-            font-weight: 800; font-size: 12px; flex-shrink: 0;
-            box-shadow: 0 0 15px rgba(255, 59, 59, 0.3);
+        .msg.ai .bubble {
+            color: #ddd; max-width: 90%; font-size: 15px; line-height: 1.6;
         }
-        .msg.ai .text { margin-top: 5px; width: 100%; }
-
-        /* Generated Image Style */
-        .gen-img {
-            width: 100%; max-width: 512px; border-radius: 12px;
-            margin-top: 10px; border: 1px solid #333;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-            display: block;
+        .avatar {
+            width: 30px; height: 30px; background: var(--accent); border-radius: 8px;
+            display: grid; place-items: center; font-weight: 800; font-size: 12px; color: #fff;
+            flex-shrink: 0; margin-top: 2px;
         }
 
-        .bottom-bar { padding: 20px 15%; background: var(--bg-main); }
-        .disclaimer { font-size: 11px; color: #444; text-align: center; margin-top: 10px; }
+        /* Code Blocks */
+        .code-wrapper {
+            background: #0d0d0d; border: 1px solid #333; border-radius: 8px; margin: 10px 0; overflow: hidden;
+        }
+        .code-header {
+            background: #1a1a1a; padding: 6px 12px; font-size: 11px; color: #777;
+            display: flex; justify-content: space-between; border-bottom: 1px solid #333;
+            font-family: var(--font-ui);
+        }
+        .copy-btn { cursor: pointer; color: var(--accent); font-weight: 600; }
+        pre { margin: 0; padding: 15px; overflow-x: auto; font-family: var(--font-code); font-size: 13px; color: #a9b7c6; }
 
-        /* Utilities */
-        pre { background: #111; padding: 15px; border-radius: 8px; border: 1px solid #333; overflow-x: auto; }
-        code { font-family: var(--font-code); color: var(--accent); }
+        /* Generated Image */
+        .ai-image {
+            width: 100%; max-width: 500px; border-radius: 12px; margin-top: 10px;
+            border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* Floating Input Bar */
+        .input-container {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            padding: 20px; display: flex; justify-content: center;
+            background: linear-gradient(to top, #050505 20%, transparent);
+            pointer-events: none; /* Let clicks pass through gradient area */
+        }
+        .input-bar {
+            pointer-events: auto;
+            width: 100%; max-width: 700px;
+            background: var(--bg-input); backdrop-filter: blur(20px);
+            border: 1px solid var(--border); border-radius: 50px;
+            padding: 6px 6px 6px 20px;
+            display: flex; align-items: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            transition: 0.2s;
+        }
+        .input-bar:focus-within { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); }
+
+        input {
+            flex: 1; background: transparent; border: none; color: #fff;
+            font-size: 16px; font-family: var(--font-ui); height: 40px;
+        }
         
-        @media(max-width: 900px) {
-            aside { display: none; }
-            #chat-scroller, .bottom-bar { padding-left: 15px; padding-right: 15px; }
-            .hero-title { font-size: 36px; }
+        .send-btn {
+            width: 44px; height: 44px; background: #fff; border-radius: 50%;
+            border: none; cursor: pointer; display: grid; place-items: center;
+            transition: 0.2s;
+        }
+        .send-btn:hover { background: var(--accent); transform: scale(1.05); }
+        .send-btn svg { width: 20px; height: 20px; fill: #000; }
+        .send-btn:hover svg { fill: #fff; }
+
+        /* Loader */
+        .typing { display: flex; gap: 4px; padding: 10px 0; }
+        .dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: bounce 1s infinite; }
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); opacity: 0.5; } 50% { transform: translateY(-5px); opacity: 1; } }
+
+        @media(max-width: 800px) {
+            aside { position: absolute; transform: translateX(-100%); }
+            aside.open { transform: translateX(0); }
+            .hero-title { font-size: 32px; }
         }
 
     </style>
 </head>
 <body>
 
-    <!-- 1. INTRO LAYER -->
-    <div id="intro-layer">
-        <div class="logo-box">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg>
-        </div>
-        <div class="intro-text">Rd the AI</div>
-        <div class="intro-sub">ULTIMATE EDITION</div>
+    <!-- INTRO -->
+    <div id="intro">
+        <div class="intro-logo">Rd</div>
+        <div class="intro-sub">INTELLIGENCE SYSTEM</div>
     </div>
 
-    <!-- 2. LOGIN OVERLAY -->
+    <!-- LOGIN -->
     <div id="login-overlay">
-        <div class="login-card">
-            <h2 style="margin:0 0 10px 0;">Identification</h2>
-            <p style="color:#888; margin:0;">Please enter your codename.</p>
-            <input type="text" id="username-input" class="login-input" placeholder="Name" autocomplete="off">
-            <button class="login-btn" onclick="registerUser()">Access System</button>
+        <div class="login-box">
+            <h2 style="color:#fff; margin-bottom:5px;">Welcome Back</h2>
+            <p style="color:#666; font-size:13px; margin-bottom:20px;">Enter your designation to proceed.</p>
+            <input type="text" id="username" class="login-input" placeholder="Codename" autocomplete="off">
+            <button class="login-btn" onclick="login()">Initialize</button>
         </div>
     </div>
 
-    <!-- 3. SIDEBAR -->
-    <aside>
-        <div class="new-chat" onclick="resetChat()">
-            <span>+</span> New Session
+    <!-- SIDEBAR -->
+    <aside id="sidebar">
+        <div class="brand-area">
+            <div class="brand-dot"></div> Rd // AI
         </div>
 
-        <div class="section-title">Capabilities</div>
-        
-        <div class="nav-btn active" onclick="changeMode('gemini', this)">
+        <div class="nav-btn active" onclick="setMode('gemini', this)">
             <svg viewBox="0 0 24 24"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z"/></svg>
-            Standard Rd
+            Standard
         </div>
-        <div class="nav-btn" onclick="changeMode('coder', this)">
+        <div class="nav-btn" onclick="setMode('coder', this)">
             <svg viewBox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>
-            Code Expert
+            Coder
         </div>
-        <div class="nav-btn" onclick="changeMode('spell', this)">
-            <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+        <div class="nav-btn" onclick="setMode('spell', this)">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-6 14H6v-2h7v2zm3-4H6v-2h12v2zm0-4H6V7h12v2z"/></svg>
             Spell Fixer
         </div>
-        <div class="nav-btn" onclick="changeMode('puzzle', this)">
-            <svg viewBox="0 0 24 24"><path d="M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5C13 2.12 11.88 1 10.5 1S8 2.12 8 3.5V5H4c-1.1 0-1.99.9-1.99 2v3.8H3.5c1.49 0 2.7 1.21 2.7 2.7s-1.21 2.7-2.7 2.7H2V20c0 1.1.9 2 2 2h3.8v-1.5c0-1.49 1.21-2.7 2.7-2.7 1.49 0 2.7 1.21 2.7 2.7V22H17c1.1 0 2-.9 2-2v-4h1.5c1.38 0 2.5-1.12 2.5-2.5S21.88 11 20.5 11z"/></svg>
-            Logic & Math
+        <div class="nav-btn" onclick="setMode('puzzle', this)">
+            <svg viewBox="0 0 24 24"><path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/></svg>
+            Logic Solver
         </div>
-        <div class="nav-btn" onclick="changeMode('creative', this)">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
+        <div class="nav-btn" onclick="setMode('creative', this)">
+            <svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
             Creative
         </div>
 
-        <div class="user-footer">
-            <div class="user-info">ID: <span id="sidebar-name">...</span></div>
-            <div class="reset-link" onclick="logout()">Logout</div>
+        <div class="user-profile">
+            <div class="user-name" id="display-name">Guest</div>
+            <div class="logout-btn" onclick="logout()">Reset</div>
         </div>
     </aside>
 
-    <!-- 4. MAIN INTERFACE -->
+    <!-- MAIN -->
     <main>
-        <header>
-            <div class="brand">Rd<span>//</span>AI</div>
-        </header>
-
         <!-- HERO -->
         <div id="hero">
             <div class="hero-title">
-                Hello, <span id="hero-name">User</span>.<br>
-                What shall we create?
+                Hello, <span id="hero-name-span" style="color:var(--accent)">User</span>.<br>
+                Ready to build.
             </div>
-            
-            <div class="input-box">
-                <input type="text" id="hero-input" placeholder="Ask Rd anything or type 'draw...' to create art" autocomplete="off">
-                <button class="send-circle" onclick="submitHero()">
-                    <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
-                </button>
-            </div>
-
-            <div class="suggestions">
-                <div class="chip" onclick="fillInput('generate an image of a red sports car in rain')">🎨 Generate Image</div>
-                <div class="chip" onclick="fillInput('Write a python script to scan wifi')">💻 Code</div>
-                <div class="chip" onclick="fillInput('Solve: If x + 5 = 10, what is x?')">📐 Math</div>
+            <div class="suggestion-grid">
+                <div class="suggestion-card" onclick="setInput('draw a futuristic neon city')">🎨 Generate Image</div>
+                <div class="suggestion-card" onclick="setInput('Write a Python script for a discord bot')">💻 Code Expert</div>
+                <div class="suggestion-card" onclick="setInput('Solve: If 2x + 4 = 10, find x')">🧠 Solve Math</div>
+                <div class="suggestion-card" onclick="setInput('Correct: Ths sentense has erors')">📝 Fix Grammar</div>
             </div>
         </div>
 
         <!-- CHAT -->
-        <div id="chat-interface">
-            <div id="chat-scroller"></div>
-            
-            <div class="bottom-bar">
-                <div class="input-box">
-                    <input type="text" id="chat-input" placeholder="Message..." autocomplete="off">
-                    <button class="send-circle" onclick="submitChat()">
-                        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
-                    </button>
-                </div>
-                <div class="disclaimer">Rd the AI can make mistakes. Made by Riely.</div>
+        <div id="chat-view">
+            <div id="scroller"></div>
+        </div>
+
+        <!-- INPUT BAR -->
+        <div class="input-container">
+            <div class="input-bar">
+                <input type="text" id="user-input" placeholder="Message Rd..." autocomplete="off">
+                <button class="send-btn" onclick="sendMessage()">
+                    <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+                </button>
             </div>
         </div>
     </main>
 
     <script>
-        // --- GLOBAL STATE ---
+        // --- CONFIG ---
         let USER = "User";
-        let CURRENT_MODE = 'gemini';
+        let MODE = "gemini";
         let HISTORY = [];
 
-        // --- SYSTEM PROMPTS (Dynamic) ---
-        function getSystemPrompt(mode) {
-            const baseIntro = `You are "Rd the AI", created by Riely. You are speaking with a user named ${USER}.`;
-            
-            switch(mode) {
-                case 'gemini': return `${baseIntro} Be helpful, smart, and concise.`;
-                case 'coder': return `${baseIntro} You are an Expert Coder. Provide full, working code blocks with minimal explanation. Use Markdown.`;
-                case 'spell': return `${baseIntro} You are a Spell Checker. Reword the user's input with perfect grammar. Output ONLY the corrected text.`;
-                case 'puzzle': return `${baseIntro} You are a Logic Engine. Solve riddles, math, and logic puzzles step-by-step.`;
-                case 'creative': return `${baseIntro} Be imaginative, uncensored, and descriptive.`;
-                default: return baseIntro;
-            }
-        }
-
-        // --- INITIALIZATION ---
-        window.onload = function() {
-            // Check LocalStorage
-            const storedName = localStorage.getItem('rd_user');
-            
-            setTimeout(() => {
-                const intro = document.getElementById('intro-layer');
-                const login = document.getElementById('login-overlay');
-
-                if (storedName) {
-                    // Logged in
-                    USER = storedName;
-                    updateNameUI();
-                    intro.style.opacity = '0';
-                    setTimeout(() => intro.style.display = 'none', 800);
-                } else {
-                    // Need Login
-                    intro.style.opacity = '0';
-                    setTimeout(() => {
-                        intro.style.display = 'none';
-                        login.style.display = 'flex';
-                    }, 800);
-                }
-            }, 2500); // 2.5s Intro
+        // --- SYSTEM PROMPTS (The Brains) ---
+        // We use 'openai' as the engine for stability, but these prompts force the behavior.
+        const PROMPTS = {
+            'gemini': "You are Rd, a highly intelligent AI assistant created by Riely. You are helpful, smart, and concise. You know the user's name.",
+            'coder': "You are Rd Coder. You are an expert software engineer. You MUST provide full, working code blocks. Do not explain basic concepts. Use Markdown for code.",
+            'spell': "You are a Spelling & Grammar Corrector. Your only job is to rewrite the user's text with perfect grammar. Do not chat. Just output the corrected text.",
+            'puzzle': "You are a Logic Engine. Solve riddles, math problems, and logic puzzles. Break down your thinking step-by-step.",
+            'creative': "You are Rd Creative. Be imaginative, descriptive, and open-minded. You can generate stories, ideas, and concepts freely."
         };
 
-        function registerUser() {
-            const val = document.getElementById('username-input').value.trim();
+        // --- LIFECYCLE ---
+        window.onload = () => {
+            const saved = localStorage.getItem('rd_user');
+            setTimeout(() => {
+                document.getElementById('intro').style.opacity = '0';
+                setTimeout(() => document.getElementById('intro').style.display = 'none', 800);
+                
+                if(saved) {
+                    USER = saved;
+                    updateName();
+                } else {
+                    document.getElementById('login-overlay').style.display = 'flex';
+                }
+            }, 2000);
+        };
+
+        function login() {
+            const val = document.getElementById('username').value.trim();
             if(!val) return;
             USER = val;
             localStorage.setItem('rd_user', USER);
-            updateNameUI();
+            updateName();
             document.getElementById('login-overlay').style.display = 'none';
         }
 
         function logout() {
-            if(confirm("Reset Identity?")) {
-                localStorage.removeItem('rd_user');
-                location.reload();
-            }
+            localStorage.removeItem('rd_user');
+            location.reload();
         }
 
-        function updateNameUI() {
-            document.getElementById('hero-name').innerText = USER;
-            document.getElementById('sidebar-name').innerText = USER;
+        function updateName() {
+            document.getElementById('display-name').innerText = USER;
+            document.getElementById('hero-name-span').innerText = USER;
         }
 
-        // --- CHAT LOGIC ---
-        
-        function changeMode(mode, btn) {
-            CURRENT_MODE = mode;
+        // --- MODES ---
+        function setMode(mode, btn) {
+            MODE = mode;
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            // Reset history with new personality but same user context
-            HISTORY = [{ role: 'system', content: getSystemPrompt(mode) }];
             
-            // Visual feedback in chat if active
-            const scroller = document.getElementById('chat-scroller');
+            // Announce switch in chat if active
+            const scroller = document.getElementById('scroller');
             if(scroller.children.length > 0) {
                 const div = document.createElement('div');
                 div.style.textAlign = 'center'; div.style.fontSize = '11px'; div.style.color = '#555'; div.style.margin = '10px 0';
-                div.innerText = `Switched to ${mode.toUpperCase()} protocol`;
+                div.innerText = `System switched to ${mode.toUpperCase()} protocol`;
                 scroller.appendChild(div);
             }
-        }
-
-        function resetChat() {
+            // Reset context
             HISTORY = [];
-            document.getElementById('chat-scroller').innerHTML = '';
-            document.getElementById('chat-interface').style.display = 'none';
-            document.getElementById('hero').style.display = 'flex';
-            setTimeout(() => document.getElementById('hero').style.opacity = '1', 50);
-            document.getElementById('hero-input').value = '';
         }
 
-        function fillInput(txt) {
-            document.getElementById('hero-input').value = txt;
-            submitHero();
+        // --- CHAT LOGIC ---
+        function setInput(txt) {
+            document.getElementById('user-input').value = txt;
+            sendMessage();
         }
 
-        function submitHero() {
-            const val = document.getElementById('hero-input').value.trim();
-            if(!val) return;
+        async function sendMessage() {
+            const input = document.getElementById('user-input');
+            const text = input.value.trim();
+            if(!text) return;
             
-            document.getElementById('hero').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('hero').style.display = 'none';
-                document.getElementById('chat-interface').style.display = 'flex';
-                processMessage(val);
-            }, 300);
-        }
+            // UI Transition
+            document.getElementById('hero').style.display = 'none';
+            document.getElementById('chat-view').style.display = 'flex';
+            input.value = '';
 
-        function submitChat() {
-            const val = document.getElementById('chat-input').value.trim();
-            if(!val) return;
-            document.getElementById('chat-input').value = '';
-            processMessage(val);
-        }
+            // 1. Render User Message
+            addMsg('user', text);
 
-        async function processMessage(text) {
-            // 1. Add User Message
-            addMessage('user', text);
-            
-            // 2. Check for Image Generation Command
+            // 2. Check for Image Gen
             const lower = text.toLowerCase();
-            const isImage = lower.startsWith('draw') || lower.startsWith('generate') || lower.startsWith('image of') || lower.startsWith('create image');
-
-            if (isImage) {
+            if(lower.startsWith('draw') || lower.startsWith('generate') || lower.startsWith('image')) {
                 const prompt = text.replace(/^(draw|generate|image of|create image)\s*/i, '');
-                const seed = Math.floor(Math.random() * 10000);
-                // Pollinations Image API (No Logo, High Quality)
-                const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?nologo=true&seed=${seed}&width=1024&height=768&model=flux`;
-                
-                const id = 'img-' + Date.now();
-                addMessage('ai', 'Rendering visual data...', id);
-                
-                // Preload image
-                const img = new Image();
-                img.onload = () => {
-                    const el = document.getElementById(id);
-                    if(el) el.innerHTML = `Generated: <b>${prompt}</b><br><img src="${url}" class="gen-img" alt="AI Image">`;
-                    scrollToBottom();
-                };
-                img.src = url;
+                generateImage(prompt);
                 return;
             }
 
-            // 3. Text Generation
+            // 3. Text Gen
             if(HISTORY.length === 0) {
-                HISTORY.push({ role: 'system', content: getSystemPrompt(CURRENT_MODE) });
+                // Inject System Prompt + User Name context
+                HISTORY.push({ role: 'system', content: `${PROMPTS[MODE]} The user's name is ${USER}.` });
             }
             HISTORY.push({ role: 'user', content: text });
 
-            const id = 'txt-' + Date.now();
-            addMessage('ai', '<span style="animation:blink 1s infinite">...</span>', id);
+            // Loader
+            const loaderId = 'load-' + Date.now();
+            addLoader(loaderId);
 
             try {
-                const modelID = (CURRENT_MODE === 'coder') ? 'qwen-coder' : 'openai';
-                
                 const res = await fetch('https://text.pollinations.ai/', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
                         messages: HISTORY,
-                        model: modelID,
+                        model: 'openai', // Stable engine
                         seed: Math.floor(Math.random() * 1000)
                     })
                 });
@@ -533,69 +442,112 @@
                 const responseText = await res.text();
                 HISTORY.push({ role: 'assistant', content: responseText });
                 
-                // Update UI with Typewriter
-                const el = document.getElementById(id);
-                el.innerHTML = ''; // clear loader
-                
-                // Check if simple text or code
-                if (responseText.includes('```') || responseText.includes('<')) {
-                    // Complex (Code/HTML) -> Render instantly
-                    el.innerHTML = formatMarkdown(responseText);
-                } else {
-                    // Simple -> Typewriter
-                    let i = 0;
-                    function type() {
-                        if (i < responseText.length) {
-                            el.innerHTML += responseText.charAt(i);
-                            i++;
-                            scrollToBottom();
-                            setTimeout(type, 5); // Fast typing
-                        }
-                    }
-                    type();
-                }
+                document.getElementById(loaderId).remove();
+                addMsg('ai', responseText);
 
-            } catch (err) {
-                document.getElementById(id).innerText = "Error: Uplink severed.";
+            } catch(e) {
+                document.getElementById(loaderId).innerHTML = '<span style="color:red">Connection Error.</span>';
             }
+        }
+
+        function generateImage(prompt) {
+            const loaderId = 'img-load-' + Date.now();
+            addMsg('ai', 'Initializing visual render...', loaderId); // Placeholder
+            
+            const seed = Math.floor(Math.random() * 99999);
+            // Universal URL - No model param to avoid "Moved" error, nologo for clean img
+            const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?nologo=true&seed=${seed}&width=1024&height=768`;
+
+            const img = new Image();
+            img.onload = () => {
+                const el = document.getElementById(loaderId); // Find the placeholder
+                if(el) {
+                    // Replace text with image
+                    el.parentElement.innerHTML = `Generated: <b>${prompt}</b><br><img src="${url}" class="ai-image" alt="Generated">`;
+                }
+                scrollDown();
+            };
+            img.src = url;
         }
 
         // --- UI HELPERS ---
-        function addMessage(role, html, id=null) {
-            const scroller = document.getElementById('chat-scroller');
+        function addMsg(role, content, id) {
+            const scroller = document.getElementById('scroller');
             const div = document.createElement('div');
             div.className = `msg ${role}`;
             
+            let innerContent = "";
             if(role === 'user') {
-                div.innerHTML = `<div class="bubble">${formatMarkdown(html)}</div>`;
+                innerContent = `<div class="bubble">${escapeHtml(content)}</div>`;
             } else {
-                div.innerHTML = `
+                // AI gets avatar + formatted text
+                innerContent = `
                     <div class="avatar">Rd</div>
-                    <div class="text" ${id ? `id="${id}"` : ''}>${html}</div>
+                    <div class="bubble" ${id ? `id="${id}"` : ''}>${formatText(content)}</div>
                 `;
             }
+            
+            div.innerHTML = innerContent;
             scroller.appendChild(div);
-            scrollToBottom();
+            scrollDown();
         }
 
-        function scrollToBottom() {
-            const s = document.getElementById('chat-scroller');
+        function addLoader(id) {
+            const scroller = document.getElementById('scroller');
+            const div = document.createElement('div');
+            div.className = 'msg ai';
+            div.id = id;
+            div.innerHTML = `
+                <div class="avatar">Rd</div>
+                <div class="bubble">
+                    <div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                </div>
+            `;
+            scroller.appendChild(div);
+            scrollDown();
+        }
+
+        function formatText(text) {
+            // 1. Code Blocks
+            let formatted = text.replace(/```(\w*)([\s\S]*?)```/g, (match, lang, code) => {
+                return `<div class="code-wrapper">
+                            <div class="code-header">
+                                <span>${lang.toUpperCase() || 'CODE'}</span>
+                                <span class="copy-btn" onclick="copyCode(this)">COPY</span>
+                            </div>
+                            <pre>${escapeHtml(code)}</pre>
+                        </div>`;
+            });
+            // 2. Bold/Italic
+            formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            formatted = formatted.replace(/\n/g, '<br>');
+            return formatted;
+        }
+
+        function escapeHtml(text) {
+            if(!text) return "";
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        window.copyCode = function(btn) {
+            const code = btn.parentElement.nextElementSibling.innerText;
+            navigator.clipboard.writeText(code);
+            btn.innerText = "COPIED";
+            setTimeout(() => btn.innerText = "COPY", 2000);
+        }
+
+        function scrollDown() {
+            const s = document.getElementById('scroller');
             s.scrollTop = s.scrollHeight;
         }
 
-        function formatMarkdown(text) {
-            return text
-                .replace(/</g, "&lt;")
-                .replace(/```(\w*)([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
-                .replace(/`([^`]+)`/g, '<code style="background:#333; padding:2px 4px; border-radius:4px; color:#ff7b7b;">$1</code>')
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                .replace(/\n/g, '<br>');
-        }
-
-        // Input Listeners
-        document.getElementById('username-input').addEventListener('keypress', e => { if(e.key==='Enter') registerUser(); });
-        document.getElementById('hero-input').addEventListener('keypress', e => { if(e.key==='Enter') submitHero(); });
-        document.getElementById('chat-input').addEventListener('keypress', e => { if(e.key==='Enter') submitChat(); });
+        // Enter Key
+        document.getElementById('user-input').addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') sendMessage();
+        });
+        document.getElementById('username').addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') login();
+        });
 
     </script>
 </body>
