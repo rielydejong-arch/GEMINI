@@ -3,354 +3,422 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Rd the AI // NEXUS</title>
+    <title>Rd // OS ULTIMATE</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=JetBrains+Mono:wght@400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
 
         :root {
-            --bg-body: #050505;
-            --bg-sidebar: rgba(10, 10, 10, 0.7);
-            --bg-input: rgba(20, 20, 20, 0.8);
-            --border: rgba(255, 255, 255, 0.08);
-            --accent: #FF2A2A; /* Crimson */
-            --accent-glow: rgba(255, 42, 42, 0.4);
-            --text-main: #ECECEC;
-            --text-muted: #888;
-            --font-ui: 'Inter', sans-serif;
+            --bg-dark: #050505;
+            --bg-panel: rgba(20, 20, 20, 0.7);
+            --accent: #ff003c; /* Cyber Red */
+            --accent-glow: rgba(255, 0, 60, 0.3);
+            --text-main: #ffffff;
+            --text-sub: #888888;
+            --font-ui: 'Space Grotesk', sans-serif;
             --font-code: 'JetBrains Mono', monospace;
             --glass: blur(20px);
+            --border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
 
         body {
-            margin: 0; background: var(--bg-body); color: var(--text-main);
-            font-family: var(--font-ui); height: 100vh; display: flex; overflow: hidden;
-            /* Subtle grid background */
-            background-image: radial-gradient(circle at 50% 0%, #1a0505 0%, #000 60%);
+            margin: 0; background: var(--bg-dark); color: var(--text-main);
+            font-family: var(--font-ui); height: 100vh; width: 100vw; overflow: hidden;
+            display: flex;
         }
 
-        /* --- 1. ANIMATED INTRO --- */
-        #intro {
-            position: fixed; inset: 0; background: #000; z-index: 9999;
+        /* --- CRT EFFECT --- */
+        body::after {
+            content: ""; position: pointer-events-none; inset: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            background-size: 100% 4px; z-index: 9999; opacity: 0.15;
+        }
+
+        /* --- 1. BOOT SEQUENCE --- */
+        #boot-screen {
+            position: fixed; inset: 0; background: #000; z-index: 20000;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: opacity 0.8s ease;
-        }
-        .intro-logo {
-            font-size: 60px; font-weight: 800; letter-spacing: -2px;
-            background: linear-gradient(to right, #fff, var(--accent));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            opacity: 0; transform: scale(0.8);
-            animation: introReveal 1.2s cubic-bezier(0.2, 1, 0.3, 1) forwards;
-        }
-        .intro-sub {
-            margin-top: 10px; font-size: 12px; letter-spacing: 4px; color: #555;
-            opacity: 0; animation: fadeIn 1s ease 0.5s forwards;
-        }
-        @keyframes introReveal { to { opacity: 1; transform: scale(1); } }
-        @keyframes fadeIn { to { opacity: 1; } }
-
-        /* --- 2. LOGIN MODAL --- */
-        #login-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px); z-index: 5000;
-            display: none; justify-content: center; align-items: center;
-            animation: fadeIn 0.5s ease;
-        }
-        .login-box {
-            background: #111; border: 1px solid var(--border);
-            padding: 40px; border-radius: 24px; text-align: center;
-            width: 90%; max-width: 380px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-        }
-        .login-input {
-            width: 100%; padding: 14px; margin: 20px 0;
-            background: #080808; border: 1px solid #333; color: #fff;
-            border-radius: 12px; font-size: 16px; text-align: center;
-            transition: 0.2s;
-        }
-        .login-input:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
-        .login-btn {
-            width: 100%; padding: 12px; background: #fff; color: #000;
-            border: none; border-radius: 50px; font-weight: 700; cursor: pointer;
-            transition: 0.2s;
-        }
-        .login-btn:hover { background: var(--accent); color: #fff; }
-
-        /* --- 3. SIDEBAR (GLASS) --- */
-        aside {
-            width: 260px; height: 100%;
-            background: var(--bg-sidebar); backdrop-filter: var(--glass);
-            border-right: 1px solid var(--border);
-            display: flex; flex-direction: column; padding: 20px; gap: 8px;
-            transition: transform 0.3s ease;
-            z-index: 100;
+            font-family: var(--font-code);
         }
         
-        .brand-area {
-            font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 20px;
-            display: flex; align-items: center; gap: 10px;
+        .boot-log {
+            position: absolute; top: 20px; left: 20px; font-size: 12px; color: #444;
+            display: flex; flex-direction: column; gap: 5px;
         }
-        .brand-dot { width: 10px; height: 10px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 10px var(--accent); }
+        .log-line { opacity: 0; animation: fadeInLog 0.1s forwards; }
+        .log-line.success { color: var(--accent); }
 
-        .nav-btn {
-            padding: 12px 16px; border-radius: 12px; color: var(--text-muted);
-            font-size: 14px; font-weight: 500; cursor: pointer;
-            display: flex; align-items: center; gap: 12px;
-            transition: all 0.2s; border: 1px solid transparent;
+        .big-logo {
+            font-size: 120px; font-weight: 800; letter-spacing: -10px; line-height: 0.8;
+            color: #fff; position: relative; mix-blend-mode: difference;
+            transform: scale(0.8); opacity: 0;
+            animation: logoGlitch 0.4s cubic-bezier(0.1, 0.9, 0.2, 1) 2s forwards;
         }
-        .nav-btn:hover { background: rgba(255,255,255,0.03); color: #fff; }
-        .nav-btn.active {
-            background: rgba(255, 42, 42, 0.08); color: var(--accent);
-            border-color: rgba(255, 42, 42, 0.2);
+        .big-logo span { color: var(--accent); }
+        
+        .loading-bar {
+            width: 200px; height: 2px; background: #222; margin-top: 40px;
+            position: relative; overflow: hidden; opacity: 0;
+            animation: fadeIn 0.5s ease 0.5s forwards;
         }
-        .nav-btn svg { width: 18px; height: 18px; fill: currentColor; }
-
-        .user-profile {
-            margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: space-between;
-        }
-        .user-name { font-size: 14px; font-weight: 600; color: #fff; }
-        .logout-btn { font-size: 11px; color: #555; cursor: pointer; text-decoration: underline; }
-
-        /* --- 4. MAIN CONTENT --- */
-        main {
-            flex: 1; height: 100%; display: flex; flex-direction: column; position: relative;
+        .loading-progress {
+            position: absolute; top: 0; left: 0; height: 100%; width: 0%;
+            background: var(--accent);
+            animation: loadProgress 2s ease-in-out 0.5s forwards;
         }
 
-        /* Hero / Welcome */
-        #hero {
+        .creator-tag {
+            position: absolute; bottom: 30px; font-size: 10px; letter-spacing: 4px;
+            color: #666; text-transform: uppercase; opacity: 0;
+            animation: fadeIn 1s ease 2.5s forwards;
+        }
+
+        @keyframes fadeInLog { to { opacity: 1; } }
+        @keyframes fadeIn { to { opacity: 1; } }
+        @keyframes loadProgress { 0% { width: 0%; } 40% { width: 70%; } 100% { width: 100%; } }
+        @keyframes logoGlitch { 
+            0% { opacity: 0; transform: scale(1.5); clip-path: inset(0 0 100% 0); }
+            50% { opacity: 1; clip-path: inset(0 0 0 0); filter: invert(1); }
+            100% { opacity: 1; transform: scale(1); filter: invert(0); }
+        }
+
+        /* --- 2. LOGIN SCREEN --- */
+        #login-screen {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(30px); z-index: 10000;
+            display: none; justify-content: center; align-items: center;
+        }
+        .secure-box {
+            background: #050505; border: 1px solid var(--accent);
+            padding: 40px; width: 350px; text-align: center;
+            box-shadow: 0 0 50px rgba(255, 0, 60, 0.2);
+            position: relative;
+        }
+        .secure-box::before {
+            content: "SECURE ACCESS"; position: absolute; top: -10px; left: 50%;
+            transform: translateX(-50%); background: #050505; padding: 0 10px;
+            color: var(--accent); font-size: 10px; letter-spacing: 2px; font-weight: bold;
+        }
+        .secure-input {
+            background: transparent; border: none; border-bottom: 2px solid #333;
+            color: #fff; font-size: 24px; text-align: center; padding: 10px;
+            width: 100%; font-family: var(--font-code); margin: 30px 0;
+        }
+        .secure-input:focus { border-color: var(--accent); }
+        .secure-btn {
+            background: var(--accent); color: #000; font-weight: 800; border: none;
+            padding: 15px; width: 100%; cursor: pointer; text-transform: uppercase;
+            letter-spacing: 1px; transition: 0.2s;
+        }
+        .secure-btn:hover { background: #fff; }
+
+        /* --- 3. SIDEBAR --- */
+        aside {
+            width: 70px; border-right: var(--border);
+            display: flex; flex-direction: column; align-items: center; padding: 20px 0;
+            background: rgba(10,10,10,0.6); backdrop-filter: var(--glass);
+            transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            z-index: 100; flex-shrink: 0;
+        }
+        aside:hover { width: 220px; }
+
+        .logo-mark {
+            width: 40px; height: 40px; background: #fff; color: #000;
+            font-weight: 900; font-size: 20px; display: grid; place-items: center;
+            margin-bottom: 40px; clip-path: polygon(10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%);
+        }
+
+        .nav-item {
+            width: 100%; padding: 15px 0; cursor: pointer;
+            display: flex; align-items: center; color: var(--text-sub);
+            transition: 0.2s; position: relative; overflow: hidden;
+        }
+        .nav-item:hover { color: #fff; background: rgba(255,255,255,0.02); }
+        .nav-item.active { color: var(--accent); }
+        .nav-item.active::before {
+            content: ""; position: absolute; left: 0; top: 10px; bottom: 10px; width: 3px;
+            background: var(--accent); box-shadow: 0 0 15px var(--accent);
+        }
+        
+        .icon-box { min-width: 70px; display: flex; justify-content: center; align-items: center; font-size: 18px; flex-shrink: 0; }
+        .label { opacity: 0; white-space: nowrap; font-size: 13px; font-weight: 500; transition: 0.2s; transform: translateX(-10px); }
+        aside:hover .label { opacity: 1; transform: translateX(0); }
+
+        .bottom-panel { margin-top: auto; width: 100%; border-top: var(--border); padding-top: 10px; }
+        .user-block { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .user-avatar { width: 30px; height: 30px; background: #222; border-radius: 50%; display: grid; place-items: center; font-size: 10px; }
+        .credits { display: none; text-align: center; }
+        aside:hover .credits { display: block; }
+        .made-by { font-size: 9px; color: var(--accent); font-weight: bold; margin-top: 5px; }
+        .logout { font-size: 10px; color: #666; text-decoration: underline; cursor: pointer; margin-top: 5px; }
+
+        /* --- 4. MAIN LAYOUT --- */
+        main { flex: 1; position: relative; display: flex; flex-direction: column; overflow: hidden; }
+        
+        #background-glow {
+            position: absolute; width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(255,0,60,0.08) 0%, transparent 70%);
+            top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;
+            filter: blur(50px);
+        }
+
+        /* Hero (Welcome Screen) */
+        #hero-view {
             flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
-            opacity: 1; transition: 0.3s; padding: 20px;
+            padding: 20px; transition: 0.4s ease;
         }
         .hero-title {
-            font-size: 42px; font-weight: 700; text-align: center; margin-bottom: 40px;
-            background: linear-gradient(135deg, #fff 0%, #666 100%);
+            font-size: 48px; font-weight: 700; text-align: center; margin-bottom: 40px;
+            background: linear-gradient(180deg, #fff 0%, #666 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            letter-spacing: -2px;
         }
-        .suggestion-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 10px; width: 100%; max-width: 600px;
+        .hero-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; width: 100%; max-width: 600px;
         }
-        .suggestion-card {
-            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
-            padding: 15px; border-radius: 16px; cursor: pointer; transition: 0.2s;
-            font-size: 13px; color: #aaa; text-align: center;
+        .card {
+            background: rgba(255,255,255,0.02); border: var(--border);
+            padding: 20px; border-radius: 12px; cursor: pointer; transition: 0.3s;
+            display: flex; flex-direction: column; gap: 5px;
         }
-        .suggestion-card:hover { border-color: var(--accent); color: #fff; background: rgba(255,42,42,0.05); }
+        .card:hover { 
+            background: rgba(255,255,255,0.05); border-color: var(--accent); 
+            transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .card-icon { font-size: 20px; }
+        .card-head { font-size: 14px; font-weight: 600; color: #fff; }
+        .card-sub { font-size: 12px; color: #666; }
 
-        /* Chat Area */
+        /* Chat Feed */
         #chat-view {
             display: none; flex-direction: column; height: 100%; width: 100%;
         }
-        #scroller {
-            flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 120px;
-            display: flex; flex-direction: column; gap: 24px;
-            max-width: 900px; margin: 0 auto; width: 100%;
+        #chat-feed {
+            flex: 1; overflow-y: auto; padding: 40px 10% 120px 10%;
+            display: flex; flex-direction: column; gap: 20px;
+            scroll-behavior: smooth;
         }
-        /* Custom Scrollbar */
-        #scroller::-webkit-scrollbar { width: 6px; }
-        #scroller::-webkit-scrollbar-thumb { background: #222; border-radius: 3px; }
+        #chat-feed::-webkit-scrollbar { width: 4px; }
+        #chat-feed::-webkit-scrollbar-thumb { background: #333; }
 
-        /* Messages */
-        .msg { display: flex; gap: 15px; animation: msgSlide 0.3s ease; }
-        @keyframes msgSlide { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .msg { display: flex; gap: 15px; width: 100%; animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         .msg.user { justify-content: flex-end; }
         .msg.user .bubble {
-            background: #222; color: #fff; border: 1px solid #333;
-            border-radius: 20px 20px 4px 20px; padding: 12px 18px; max-width: 85%;
-            font-size: 15px; line-height: 1.5;
+            background: #111; border: 1px solid #333; color: #fff;
+            padding: 12px 18px; border-radius: 18px 18px 2px 18px;
+            max-width: 80%; font-size: 15px; line-height: 1.5;
+            word-wrap: break-word; min-width: 0;
         }
 
         .msg.ai .bubble {
             color: #ddd; max-width: 90%; font-size: 15px; line-height: 1.6;
+            word-wrap: break-word; min-width: 0;
         }
-        .avatar {
-            width: 30px; height: 30px; background: var(--accent); border-radius: 8px;
-            display: grid; place-items: center; font-weight: 800; font-size: 12px; color: #fff;
-            flex-shrink: 0; margin-top: 2px;
-        }
-
-        /* Code Blocks */
-        .code-wrapper {
-            background: #0d0d0d; border: 1px solid #333; border-radius: 8px; margin: 10px 0; overflow: hidden;
-        }
-        .code-header {
-            background: #1a1a1a; padding: 6px 12px; font-size: 11px; color: #777;
-            display: flex; justify-content: space-between; border-bottom: 1px solid #333;
-            font-family: var(--font-ui);
-        }
-        .copy-btn { cursor: pointer; color: var(--accent); font-weight: 600; }
-        pre { margin: 0; padding: 15px; overflow-x: auto; font-family: var(--font-code); font-size: 13px; color: #a9b7c6; }
-
-        /* Generated Image */
-        .ai-image {
-            width: 100%; max-width: 500px; border-radius: 12px; margin-top: 10px;
-            border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        .ai-marker {
+            width: 30px; height: 30px; background: rgba(20,20,20,0.8); border: 1px solid #333;
+            border-radius: 6px; display: grid; place-items: center; color: var(--accent);
+            font-weight: bold; flex-shrink: 0; font-size: 14px;
         }
 
-        /* Floating Input Bar */
-        .input-container {
-            position: absolute; bottom: 0; left: 0; right: 0;
-            padding: 20px; display: flex; justify-content: center;
-            background: linear-gradient(to top, #050505 20%, transparent);
-            pointer-events: none; /* Let clicks pass through gradient area */
+        /* Input Dock */
+        .input-dock {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 800px;
+            background: rgba(10,10,10,0.85); backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 100px;
+            padding: 6px 6px 6px 25px;
+            display: flex; align-items: center; gap: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            z-index: 500; transition: 0.3s;
         }
-        .input-bar {
-            pointer-events: auto;
-            width: 100%; max-width: 700px;
-            background: var(--bg-input); backdrop-filter: blur(20px);
-            border: 1px solid var(--border); border-radius: 50px;
-            padding: 6px 6px 6px 20px;
-            display: flex; align-items: center;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-            transition: 0.2s;
-        }
-        .input-bar:focus-within { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); }
+        .input-dock:focus-within { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); }
 
         input {
             flex: 1; background: transparent; border: none; color: #fff;
-            font-size: 16px; font-family: var(--font-ui); height: 40px;
+            font-family: var(--font-ui); font-size: 16px; height: 40px;
         }
-        
         .send-btn {
-            width: 44px; height: 44px; background: #fff; border-radius: 50%;
-            border: none; cursor: pointer; display: grid; place-items: center;
-            transition: 0.2s;
+            width: 44px; height: 44px; background: #fff; border-radius: 50%; border: none;
+            display: grid; place-items: center; cursor: pointer; transition: 0.2s; flex-shrink: 0;
         }
-        .send-btn:hover { background: var(--accent); transform: scale(1.05); }
-        .send-btn svg { width: 20px; height: 20px; fill: #000; }
-        .send-btn:hover svg { fill: #fff; }
+        .send-btn:hover { background: var(--accent); transform: scale(1.1); }
 
-        /* Loader */
-        .typing { display: flex; gap: 4px; padding: 10px 0; }
-        .dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: bounce 1s infinite; }
-        .dot:nth-child(2) { animation-delay: 0.2s; }
-        .dot:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); opacity: 0.5; } 50% { transform: translateY(-5px); opacity: 1; } }
+        /* Rich Content */
+        .creator-card {
+            background: #0f0f0f; border: 1px solid var(--accent);
+            padding: 20px; border-radius: 12px; display: flex; align-items: center; gap: 15px;
+            box-shadow: 0 0 30px var(--accent-glow); animation: pop 0.4s ease;
+        }
+        .yt-btn {
+            background: #ff0000; color: #fff; padding: 6px 12px; font-size: 11px;
+            text-decoration: none; font-weight: bold; margin-top: 5px; display: inline-block; border-radius: 4px;
+        }
+        .ai-img { width: 100%; max-width: 500px; border-radius: 12px; border: 1px solid #333; margin-top: 10px; }
+        
+        .code-block { margin-top: 10px; background: #000; border: 1px solid #333; border-radius: 8px; overflow: hidden; }
+        .code-header { background: #1a1a1a; padding: 5px 10px; font-size: 11px; color: #666; display: flex; justify-content: space-between; }
+        .copy-btn { cursor: pointer; color: var(--accent); font-weight: bold; }
+        pre { margin: 0; padding: 15px; overflow-x: auto; font-family: var(--font-code); font-size: 13px; color: #ccc; }
+        a { color: var(--accent); text-decoration: none; }
+
+        @keyframes pop { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
         @media(max-width: 800px) {
-            aside { position: absolute; transform: translateX(-100%); }
-            aside.open { transform: translateX(0); }
             .hero-title { font-size: 32px; }
+            .hero-grid { grid-template-columns: 1fr; }
+            aside { position: fixed; height: 60px; width: 100%; bottom: 0; flex-direction: row; justify-content: space-around; border-top: var(--border); border-right: none; }
+            aside:hover { width: 100%; }
+            .input-dock { bottom: 80px; }
+            #chat-feed { padding-bottom: 140px; }
+            .icon-box { min-width: auto; }
+            .label { display: none; }
+            .bottom-user { display: none; }
+            .logo-mark { display: none; }
         }
 
     </style>
 </head>
 <body>
 
-    <!-- INTRO -->
-    <div id="intro">
-        <div class="intro-logo">Rd</div>
-        <div class="intro-sub">INTELLIGENCE SYSTEM</div>
+    <!-- BOOT -->
+    <div id="boot-screen">
+        <div class="boot-log" id="boot-log"></div>
+        <div class="big-logo">Rd<span>//</span></div>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+        <div class="creator-tag">SYSTEM ARCHITECT: RIELY</div>
     </div>
 
     <!-- LOGIN -->
-    <div id="login-overlay">
-        <div class="login-box">
-            <h2 style="color:#fff; margin-bottom:5px;">Welcome Back</h2>
-            <p style="color:#666; font-size:13px; margin-bottom:20px;">Enter your designation to proceed.</p>
-            <input type="text" id="username" class="login-input" placeholder="Codename" autocomplete="off">
-            <button class="login-btn" onclick="login()">Initialize</button>
+    <div id="login-screen">
+        <div class="secure-box">
+            <input type="text" id="username" class="secure-input" placeholder="IDENTITY" autocomplete="off">
+            <button class="secure-btn" onclick="login()">AUTHORIZE</button>
         </div>
     </div>
 
     <!-- SIDEBAR -->
-    <aside id="sidebar">
-        <div class="brand-area">
-            <div class="brand-dot"></div> Rd // AI
+    <aside>
+        <div class="logo-mark">R</div>
+        
+        <div class="nav-item active" onclick="setMode('gemini', this)">
+            <div class="icon-box">⦿</div><div class="label">NEXUS</div>
+        </div>
+        <div class="nav-item" onclick="setMode('coder', this)">
+            <div class="icon-box">⚡</div><div class="label">CODER</div>
+        </div>
+        <div class="nav-item" onclick="setMode('spell', this)">
+            <div class="icon-box">✎</div><div class="label">EDITOR</div>
+        </div>
+        <div class="nav-item" onclick="setMode('puzzle', this)">
+            <div class="icon-box">❖</div><div class="label">LOGIC</div>
+        </div>
+        <div class="nav-item" onclick="setMode('creative', this)">
+            <div class="icon-box">✦</div><div class="label">ARTIST</div>
         </div>
 
-        <div class="nav-btn active" onclick="setMode('gemini', this)">
-            <svg viewBox="0 0 24 24"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z"/></svg>
-            Standard
-        </div>
-        <div class="nav-btn" onclick="setMode('coder', this)">
-            <svg viewBox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>
-            Coder
-        </div>
-        <div class="nav-btn" onclick="setMode('spell', this)">
-            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-6 14H6v-2h7v2zm3-4H6v-2h12v2zm0-4H6V7h12v2z"/></svg>
-            Spell Fixer
-        </div>
-        <div class="nav-btn" onclick="setMode('puzzle', this)">
-            <svg viewBox="0 0 24 24"><path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/></svg>
-            Logic Solver
-        </div>
-        <div class="nav-btn" onclick="setMode('creative', this)">
-            <svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
-            Creative
-        </div>
-
-        <div class="user-profile">
-            <div class="user-name" id="display-name">Guest</div>
-            <div class="logout-btn" onclick="logout()">Reset</div>
+        <div class="bottom-panel">
+            <div class="user-block">
+                <div class="user-avatar" id="user-initial">G</div>
+                <div class="credits">
+                    <div class="made-by">MADE BY RIELY</div>
+                    <div class="logout" onclick="logout()">LOGOUT</div>
+                </div>
+            </div>
         </div>
     </aside>
 
     <!-- MAIN -->
     <main>
+        <div id="background-glow"></div>
+
         <!-- HERO -->
-        <div id="hero">
+        <div id="hero-view">
             <div class="hero-title">
-                Hello, <span id="hero-name-span" style="color:var(--accent)">User</span>.<br>
-                Ready to build.
+                Hello, <span id="hero-name" style="color:var(--accent)">User</span>.<br>
+                Awaiting input.
             </div>
-            <div class="suggestion-grid">
-                <div class="suggestion-card" onclick="setInput('draw a futuristic neon city')">🎨 Generate Image</div>
-                <div class="suggestion-card" onclick="setInput('Write a Python script for a discord bot')">💻 Code Expert</div>
-                <div class="suggestion-card" onclick="setInput('Solve: If 2x + 4 = 10, find x')">🧠 Solve Math</div>
-                <div class="suggestion-card" onclick="setInput('Correct: Ths sentense has erors')">📝 Fix Grammar</div>
+            <div class="hero-grid">
+                <div class="card" onclick="trigger('draw a futuristic city')">
+                    <div class="card-icon">🎨</div>
+                    <div class="card-head">Visual Generation</div>
+                    <div class="card-sub">Render high-fidelity imagery.</div>
+                </div>
+                <div class="card" onclick="trigger('Write a python script to scan wifi')">
+                    <div class="card-icon">💻</div>
+                    <div class="card-head">Code Engineering</div>
+                    <div class="card-sub">Generate complex logic.</div>
+                </div>
+                <div class="card" onclick="trigger('Who is Riely?')">
+                    <div class="card-icon">👁️</div>
+                    <div class="card-head">System Origin</div>
+                    <div class="card-sub">Identify the architect.</div>
+                </div>
+                <div class="card" onclick="trigger('Solve: 2x + 5 = 15')">
+                    <div class="card-icon">📐</div>
+                    <div class="card-head">Math Solver</div>
+                    <div class="card-sub">Calculate and explain.</div>
+                </div>
             </div>
         </div>
 
         <!-- CHAT -->
         <div id="chat-view">
-            <div id="scroller"></div>
+            <div id="chat-feed"></div>
         </div>
 
-        <!-- INPUT BAR -->
-        <div class="input-container">
-            <div class="input-bar">
-                <input type="text" id="user-input" placeholder="Message Rd..." autocomplete="off">
-                <button class="send-btn" onclick="sendMessage()">
-                    <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
-                </button>
-            </div>
+        <!-- INPUT -->
+        <div class="input-dock">
+            <input type="text" id="user-input" placeholder="Enter command or 'draw...'" autocomplete="off">
+            <button class="send-btn" onclick="send()">➔</button>
         </div>
     </main>
 
     <script>
-        // --- CONFIG ---
-        let USER = "User";
-        let MODE = "gemini";
-        let HISTORY = [];
+        // --- BOOT LOGIC ---
+        const logs = [
+            "INITIALIZING KERNEL...", "LOADING NEURAL PATHWAYS...", 
+            "CONNECTING TO RIELY NET...", "ACCESS GRANTED."
+        ];
+        
+        window.onload = () => {
+            const logDiv = document.getElementById('boot-log');
+            let d = 100;
+            logs.forEach((l, i) => {
+                setTimeout(() => {
+                    const line = document.createElement('div');
+                    line.className = 'log-line'; line.innerText = `> ${l}`;
+                    if(i===logs.length-1) line.classList.add('success');
+                    logDiv.appendChild(line);
+                }, d); d+=400;
+            });
 
-        // --- SYSTEM PROMPTS (The Brains) ---
-        // We use 'openai' as the engine for stability, but these prompts force the behavior.
-        const PROMPTS = {
-            'gemini': "You are Rd, a highly intelligent AI assistant created by Riely. You are helpful, smart, and concise. You know the user's name.",
-            'coder': "You are Rd Coder. You are an expert software engineer. You MUST provide full, working code blocks. Do not explain basic concepts. Use Markdown for code.",
-            'spell': "You are a Spelling & Grammar Corrector. Your only job is to rewrite the user's text with perfect grammar. Do not chat. Just output the corrected text.",
-            'puzzle': "You are a Logic Engine. Solve riddles, math problems, and logic puzzles. Break down your thinking step-by-step.",
-            'creative': "You are Rd Creative. Be imaginative, descriptive, and open-minded. You can generate stories, ideas, and concepts freely."
+            setTimeout(() => {
+                const saved = localStorage.getItem('rd_user');
+                const boot = document.getElementById('boot-screen');
+                boot.style.transition = "opacity 0.5s";
+                boot.style.opacity = '0';
+                setTimeout(() => {
+                    boot.style.display = 'none';
+                    if(saved) { USER=saved; updateID(); }
+                    else { document.getElementById('login-screen').style.display = 'flex'; }
+                }, 500);
+            }, 3500);
         };
 
-        // --- LIFECYCLE ---
-        window.onload = () => {
-            const saved = localStorage.getItem('rd_user');
-            setTimeout(() => {
-                document.getElementById('intro').style.opacity = '0';
-                setTimeout(() => document.getElementById('intro').style.display = 'none', 800);
-                
-                if(saved) {
-                    USER = saved;
-                    updateName();
-                } else {
-                    document.getElementById('login-overlay').style.display = 'flex';
-                }
-            }, 2000);
+        // --- CORE ---
+        let USER = "Guest";
+        let MODE = "gemini";
+        let HIST = [];
+        
+        const PROMPTS = {
+            'gemini': "You are Rd, an advanced AI. Be helpful and sophisticated.",
+            'coder': "You are Rd Coder. Output code blocks only. Use Markdown.",
+            'spell': "You are Rd Editor. Correct grammar only.",
+            'puzzle': "You are Rd Logic. Solve problems step-by-step.",
+            'creative': "You are Rd Artist. Be imaginative."
         };
 
         function login() {
@@ -358,8 +426,8 @@
             if(!val) return;
             USER = val;
             localStorage.setItem('rd_user', USER);
-            updateName();
-            document.getElementById('login-overlay').style.display = 'none';
+            updateID();
+            document.getElementById('login-screen').style.display = 'none';
         }
 
         function logout() {
@@ -367,188 +435,140 @@
             location.reload();
         }
 
-        function updateName() {
-            document.getElementById('display-name').innerText = USER;
-            document.getElementById('hero-name-span').innerText = USER;
+        function updateID() {
+            document.getElementById('hero-name').innerText = USER;
+            document.getElementById('user-initial').innerText = USER.charAt(0).toUpperCase();
         }
 
-        // --- MODES ---
-        function setMode(mode, btn) {
-            MODE = mode;
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            
-            // Announce switch in chat if active
-            const scroller = document.getElementById('scroller');
-            if(scroller.children.length > 0) {
-                const div = document.createElement('div');
-                div.style.textAlign = 'center'; div.style.fontSize = '11px'; div.style.color = '#555'; div.style.margin = '10px 0';
-                div.innerText = `System switched to ${mode.toUpperCase()} protocol`;
-                scroller.appendChild(div);
-            }
-            // Reset context
-            HISTORY = [];
+        function setMode(m, el) {
+            MODE = m;
+            document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active'));
+            el.classList.add('active');
+            HIST = [];
+            const div = document.createElement('div');
+            div.style.textAlign='center'; div.style.fontSize='10px'; div.style.color='#444'; div.style.margin='10px 0';
+            div.innerText = `PROTOCOL: ${m.toUpperCase()}`;
+            document.getElementById('chat-feed').appendChild(div);
         }
 
-        // --- CHAT LOGIC ---
-        function setInput(txt) {
+        function trigger(txt) {
             document.getElementById('user-input').value = txt;
-            sendMessage();
+            send();
         }
 
-        async function sendMessage() {
-            const input = document.getElementById('user-input');
-            const text = input.value.trim();
-            if(!text) return;
-            
-            // UI Transition
-            document.getElementById('hero').style.display = 'none';
+        function send() {
+            const inp = document.getElementById('user-input');
+            const txt = inp.value.trim();
+            if(!txt) return;
+            inp.value = '';
+
+            // UI Switch
+            document.getElementById('hero-view').style.display = 'none';
             document.getElementById('chat-view').style.display = 'flex';
-            input.value = '';
+            
+            addMsg('user', txt);
 
-            // 1. Render User Message
-            addMsg('user', text);
+            const lower = txt.toLowerCase();
 
-            // 2. Check for Image Gen
-            const lower = text.toLowerCase();
-            if(lower.startsWith('draw') || lower.startsWith('generate') || lower.startsWith('image')) {
-                const prompt = text.replace(/^(draw|generate|image of|create image)\s*/i, '');
-                generateImage(prompt);
+            // 1. Creator Trigger (EXPANDED)
+            if(lower.includes('who is riely') || lower.includes('who is rielyd') || lower.includes('who made you') || lower.includes('who created you')) {
+                setTimeout(showCreator, 500);
                 return;
             }
 
-            // 3. Text Gen
-            if(HISTORY.length === 0) {
-                // Inject System Prompt + User Name context
-                HISTORY.push({ role: 'system', content: `${PROMPTS[MODE]} The user's name is ${USER}.` });
+            // 2. Image Trigger
+            if(lower.startsWith('draw') || lower.startsWith('generate') || lower.startsWith('image')) {
+                const p = txt.replace(/^(draw|generate|image of)\s*/i, '');
+                genImg(p);
+                return;
             }
-            HISTORY.push({ role: 'user', content: text });
 
-            // Loader
-            const loaderId = 'load-' + Date.now();
-            addLoader(loaderId);
+            // 3. Text
+            genText(txt);
+        }
+
+        async function genText(txt) {
+            if(HIST.length === 0) HIST.push({ role: 'system', content: PROMPTS[MODE] });
+            HIST.push({ role: 'user', content: txt });
+
+            const id = 'msg-' + Date.now();
+            addMsg('ai', 'Processing...', id);
 
             try {
                 const res = await fetch('https://text.pollinations.ai/', {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        messages: HISTORY,
-                        model: 'openai', // Stable engine
-                        seed: Math.floor(Math.random() * 1000)
-                    })
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({ messages: HIST, model: 'openai', seed: Math.floor(Math.random()*999) })
                 });
-                
-                const responseText = await res.text();
-                HISTORY.push({ role: 'assistant', content: responseText });
-                
-                document.getElementById(loaderId).remove();
-                addMsg('ai', responseText);
-
+                const out = await res.text();
+                HIST.push({ role: 'assistant', content: out });
+                document.getElementById(id).innerHTML = format(out);
             } catch(e) {
-                document.getElementById(loaderId).innerHTML = '<span style="color:red">Connection Error.</span>';
+                document.getElementById(id).innerText = "CONNECTION FAILURE";
             }
         }
 
-        function generateImage(prompt) {
-            const loaderId = 'img-load-' + Date.now();
-            addMsg('ai', 'Initializing visual render...', loaderId); // Placeholder
-            
+        function genImg(prompt) {
+            const id = 'img-' + Date.now();
+            addMsg('ai', 'Rendering visual...', id);
             const seed = Math.floor(Math.random() * 99999);
-            // Universal URL - No model param to avoid "Moved" error, nologo for clean img
-            const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?nologo=true&seed=${seed}&width=1024&height=768`;
-
+            const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?nologo=true&seed=${seed}&width=1024&height=600`;
+            
             const img = new Image();
             img.onload = () => {
-                const el = document.getElementById(loaderId); // Find the placeholder
-                if(el) {
-                    // Replace text with image
-                    el.parentElement.innerHTML = `Generated: <b>${prompt}</b><br><img src="${url}" class="ai-image" alt="Generated">`;
-                }
-                scrollDown();
+                document.getElementById(id).innerHTML = `Generated: <b>${prompt}</b><br><img src="${url}" class="ai-img">`;
+                scroll();
             };
             img.src = url;
         }
 
-        // --- UI HELPERS ---
-        function addMsg(role, content, id) {
-            const scroller = document.getElementById('scroller');
-            const div = document.createElement('div');
-            div.className = `msg ${role}`;
-            
-            let innerContent = "";
-            if(role === 'user') {
-                innerContent = `<div class="bubble">${escapeHtml(content)}</div>`;
-            } else {
-                // AI gets avatar + formatted text
-                innerContent = `
-                    <div class="avatar">Rd</div>
-                    <div class="bubble" ${id ? `id="${id}"` : ''}>${formatText(content)}</div>
-                `;
-            }
-            
-            div.innerHTML = innerContent;
-            scroller.appendChild(div);
-            scrollDown();
-        }
-
-        function addLoader(id) {
-            const scroller = document.getElementById('scroller');
+        function showCreator() {
             const div = document.createElement('div');
             div.className = 'msg ai';
-            div.id = id;
             div.innerHTML = `
-                <div class="avatar">Rd</div>
-                <div class="bubble">
-                    <div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                <div class="ai-marker">R</div>
+                <div class="creator-card">
+                    <div style="font-size:30px;">▶</div>
+                    <div>
+                        <div style="color:#fff; font-weight:bold;">Riely De Jong</div>
+                        <div style="color:#888; font-size:12px;">System Architect</div>
+                        <a href="https://www.youtube.com/@rielydejong" target="_blank" class="yt-btn">VISIT CHANNEL</a>
+                    </div>
                 </div>
             `;
-            scroller.appendChild(div);
-            scrollDown();
+            document.getElementById('chat-feed').appendChild(div);
+            scroll();
         }
 
-        function formatText(text) {
-            // 1. Code Blocks
-            let formatted = text.replace(/```(\w*)([\s\S]*?)```/g, (match, lang, code) => {
-                return `<div class="code-wrapper">
-                            <div class="code-header">
-                                <span>${lang.toUpperCase() || 'CODE'}</span>
-                                <span class="copy-btn" onclick="copyCode(this)">COPY</span>
-                            </div>
-                            <pre>${escapeHtml(code)}</pre>
-                        </div>`;
-            });
-            // 2. Bold/Italic
-            formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            formatted = formatted.replace(/\n/g, '<br>');
-            return formatted;
+        function addMsg(role, content, id) {
+            const div = document.createElement('div');
+            div.className = `msg ${role}`;
+            if(role === 'user') {
+                div.innerHTML = `<div class="bubble">${escape(content)}</div>`;
+            } else {
+                div.innerHTML = `<div class="ai-marker">R</div><div class="bubble" ${id ? `id="${id}"` : ''}>${content}</div>`;
+            }
+            document.getElementById('chat-feed').appendChild(div);
+            scroll();
         }
 
-        function escapeHtml(text) {
-            if(!text) return "";
-            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        function format(t) {
+            return t.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>')
+                    .replace(/```(\w*)([\s\S]*?)```/g, '<div class="code-block"><div class="code-header"><span>$1</span><span class="copy-btn" onclick="copyCode(this)">COPY</span></div><pre>$2</pre></div>')
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\n/g, '<br>');
         }
-
+        
         window.copyCode = function(btn) {
-            const code = btn.parentElement.nextElementSibling.innerText;
-            navigator.clipboard.writeText(code);
-            btn.innerText = "COPIED";
-            setTimeout(() => btn.innerText = "COPY", 2000);
+            navigator.clipboard.writeText(btn.parentElement.nextElementSibling.innerText);
+            btn.innerText = "COPIED"; setTimeout(()=>btn.innerText="COPY", 1000);
         }
 
-        function scrollDown() {
-            const s = document.getElementById('scroller');
-            s.scrollTop = s.scrollHeight;
-        }
+        function escape(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+        function scroll() { const c = document.getElementById('chat-feed'); c.scrollTop = c.scrollHeight; }
 
-        // Enter Key
-        document.getElementById('user-input').addEventListener('keypress', (e) => {
-            if(e.key === 'Enter') sendMessage();
-        });
-        document.getElementById('username').addEventListener('keypress', (e) => {
-            if(e.key === 'Enter') login();
-        });
-
+        document.getElementById('user-input').addEventListener('keypress', e => { if(e.key==='Enter') send(); });
+        document.getElementById('username').addEventListener('keypress', e => { if(e.key==='Enter') login(); });
     </script>
 </body>
 </html>
